@@ -1,0 +1,7 @@
+{
+    "name": "Smoke Finder",
+    "version": "1.0.0",
+    "author": "",
+    "description": "intercept and modify the AI's response before it's displayed.",
+    "script": "script.js"
+}
