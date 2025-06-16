@@ -1,0 +1,17 @@
+`<!-- This is the HTML for your extension's settings panel. -->
+<div class="interceptor-setting-item">
+    <label for="wordToReplace">Word to Replace:</label>
+    <input type="text" id="wordToReplace" placeholder="e.g., AI">
+</div>
+
+<div class="interceptor-setting-item">
+    <label for="replacementWord">Replacement Word:</label>
+    <input type="text" id="replacementWord" placeholder="e.g., Awesome Robot">
+</div>
+
+<div class="interceptor-setting-item" style="flex-direction: row; align-items: center;">
+    <input type="checkbox" id="addSuffix" style="margin-right: 10px;">
+    <label for="addSuffix" style="margin-bottom: 0;">Add '[modified]' suffix to responses</label>
+</div>
+
+<button id="interceptor-save-button" class="menu_button">Save Settings</button>

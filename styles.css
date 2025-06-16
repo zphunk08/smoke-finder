@@ -1,0 +1,24 @@
+/* This is the stylesheet for your extension. */
+/* These styles will only apply to your extension's settings panel. */
+/* The panel is automatically wrapped in a class with your extension's folder name. */
+
+.response-interceptor-project-settings {
+    padding: 10px;
+}
+
+.interceptor-setting-item {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.interceptor-setting-item label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.interceptor-setting-item input[type="text"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}

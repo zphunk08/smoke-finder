@@ -1,50 +1,63 @@
 // This is the main entry point for your extension.
 (function () {
-    // A function to perform our modification.
-    // It takes the original message text and returns the modified version.
+    // A default settings object
+    let settings = {
+        wordToReplace: 'AI',
+        replacementWord: 'Awesome Robot',
+        addSuffix: true
+    };
+
+    // This function is called when the settings are saved.
+    function onSettingsChanged() {
+        // Get the new values from the settings panel
+        const wordToReplace = document.getElementById('wordToReplace').value;
+        const replacementWord = document.getElementById('replacementWord').value;
+        const addSuffix = document.getElementById('addSuffix').checked;
+
+        // Update our settings object
+        settings = { wordToReplace, replacementWord, addSuffix };
+        console.log("[Response Interceptor] Settings updated:", settings);
+        toastr.success("Interceptor settings saved!");
+    }
+
+    // A function to perform our modification based on the current settings.
     function modifyResponse(message) {
-        // Let's create a simple rule: replace every instance of "AI" with "Awesome Robot".
-        // The 'gi' flags mean: g = global (replace all instances), i = case-insensitive.
-        const originalWord = /AI/gi;
-        const replacementWord = "Awesome Robot";
+        let modifiedMessage = message;
 
-        let modifiedMessage = message.replace(originalWord, replacementWord);
+        // Only perform replacement if both words are defined
+        if (settings.wordToReplace && settings.replacementWord) {
+            // Create a regular expression to replace all instances, case-insensitively
+            const regex = new RegExp(settings.wordToReplace, 'gi');
+            modifiedMessage = message.replace(regex, settings.replacementWord);
+        }
         
-        // You can add more rules here!
-        // For example, let's add a fun suffix to every message.
-        modifiedMessage += " *[modified]*";
+        // Add the suffix if the setting is checked
+        if (settings.addSuffix) {
+            modifiedMessage += " *[modified]*";
+        }
 
-        // Always return the final message.
         return modifiedMessage;
     }
 
-    // This is the core of the interception.
-    // SillyTavern emits an event called 'before-response-display'.
-    // We listen for that event. The event data contains the response object.
+    // Listen for the 'before-response-display' event from SillyTavern
     SillyTavern.addEventListener('before-response-display', (event) => {
-        // The message text is located in event.detail.response.mes
-        // It's a good practice to check if it exists first.
         if (event.detail.response && event.detail.response.mes) {
-            
-            // For debugging: log the original message to the browser console.
-            console.log("[Response Interceptor] Original message:", event.detail.response.mes);
-
-            // Get the original message
             const originalMessage = event.detail.response.mes;
-            
-            // Get the modified message by calling our function
             const modifiedMessage = modifyResponse(originalMessage);
-
-            // IMPORTANT: Overwrite the original message with our modified one.
-            // This is what actually changes the text you see in the chat.
             event.detail.response.mes = modifiedMessage;
-
-            // For debugging: log the new message to the browser console.
-            console.log("[Response Interceptor] Modified message:", event.detail.response.mes);
         }
     });
 
-    // You can let the user know the extension is loaded.
-    console.log("Smoke Finder extension loaded!");
+    // This function is called when the extension's settings panel is opened.
+    SillyTavern.addEventListener('extension-settings-opened-response-interceptor', () => {
+        // Populate the settings panel with the current values
+        document.getElementById('wordToReplace').value = settings.wordToReplace;
+        document.getElementById('replacementWord').value = settings.replacementWord;
+        document.getElementById('addSuffix').checked = settings.addSuffix;
 
+        // Add an event listener to the save button
+        document.getElementById('interceptor-save-button').addEventListener('click', onSettingsChanged);
+    });
+
+    console.log("Smoke Finder extension loaded!");
 })();
